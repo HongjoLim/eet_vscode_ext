@@ -1,0 +1,36 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "EET",
+	"patterns": [
+        { "match": "(?<=.*?)(\/\/.*)|^([0-9]+,)([ ]?[0-9]+,)([ ]?[0-9]+,?)(([^/][^/]*))?",
+          "name": "eetgroup",
+          "captures": {
+              "1": {"name": "comment.line.double-slash.eet", "tooltip_name": ""},
+              "2": {"name": "entity.name.type.timestamp.eet", "tooltip_name": "Timestamp"},
+              "3": {"name": "constant.numeric.uat_index", "tooltip_name": "UAT Index"},
+              "4": {"name": "keyword.instruction_id.eet", "tooltip_name": "Instruction ID"},
+              "5": {"name": "variable.instruction.eet", "tooltip_name": "Instruction"}
+          }
+        }
+    ],
+	"repository": {
+		"keywords": {
+			"patterns": [{
+				"name": "keyword.control.eet",
+				"match": "\\b(if|while|for|return)\\b"
+			}]
+		},
+		"strings": {
+			"name": "string.quoted.double.eet",
+			"begin": "\"",
+			"end": "\"",
+			"patterns": [
+				{
+					"name": "constant.character.escape.eet",
+					"match": "\\\\."
+				}
+			]
+		}
+	},
+	"scopeName": "source.eet"
+}

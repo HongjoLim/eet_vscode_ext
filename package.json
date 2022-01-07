@@ -1,0 +1,25 @@
+{
+    "name": "eet",
+    "displayName": "EET",
+    "description": "",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.63.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "contributes": {
+        "languages": [{
+            "id": "eet",
+            "aliases": ["EET", "eet"],
+            "extensions": [".eet"],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "eet",
+            "scopeName": "source.eet",
+            "path": "./syntaxes/eet.tmLanguage.json"
+        }]
+    }
+}
