@@ -9,7 +9,7 @@
               "2": {"name": "entity.name.type.timestamp.eet", "tooltip_name": "Stream Time"},
               "3": {"name": "constant.numeric.uat_index", "tooltip_name": "Unique Message Index"},
               "4": {"name": "keyword.instruction_id.eet", "tooltip_name": "Instruction ID"},
-              "5": {"name": "variable.instruction.eet", "tooltip_name": "Instruction"}
+              "5": {"name": "variable.instruction.eet", "tooltip_name": "Data"}
           }
         },
 		{
