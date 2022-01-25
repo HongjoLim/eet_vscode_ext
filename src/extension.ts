@@ -1,9 +1,9 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import instructions = require('./300.json');
+import instructions = require('./instruction_declarations.json');
 
-const EET_LANGUAGE_CONFIG = require("./syntaxes/eet.tmLanguage.json").patterns[0];
+const EET_LANGUAGE_CONFIG = require("../syntaxes/eet.tmLanguage.json").patterns[0];
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -58,7 +58,7 @@ export function activate(context: vscode.ExtensionContext) {
 		let declarations = instructions.instructions;
 		const providers = [];
 		for (let ins of declarations){
-			const item = new vscode.CompletionItem(`Instruction ${ins.id}: ${ins.name}}`);
+			const item = new vscode.CompletionItem(`Instruction ${ins.id}: ${ins.name}`);
 			let default_values = ins.fields.map((item) => {
 				return item.default;
 			  }).join(', ');

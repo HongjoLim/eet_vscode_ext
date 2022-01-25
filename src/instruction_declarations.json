@@ -4,6 +4,7 @@
             "id": 300,
             "name": "Single Frame Broadcast - J1939, OBDII , Manufacturer Specific, GM LAN",
             "version": 1,
+            "validation": "regex....",
             "fields": [
                 {
                     "index": 0,
