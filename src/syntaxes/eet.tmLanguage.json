@@ -1,28 +1,19 @@
 {
 	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"scopeName": "source.eet",
 	"name": "EET",
 	"patterns": [
-        { "match": "(?<=.*?)(\/\/.*)|^([0-9]+,)([ ]?[0-9]+,)([ ]?[0-9]+,?)(([^/][^/]*))?",
+        { "match": "^([0-9]+,)([ ]?[0-9]+,)([ ]?[0-9]+,?)(([^/][^/]*))?",
           "name": "eetgroup",
           "captures": {
-              "1": {"name": "comment.line.double-slash.eet", "tooltip_name": ""},
-              "2": {"name": "entity.name.type.timestamp.eet", "tooltip_name": "Stream Time"},
-              "3": {"name": "constant.numeric.uat_index", "tooltip_name": "Unique Message Index"},
-              "4": {"name": "keyword.instruction_id.eet", "tooltip_name": "Instruction ID"},
-              "5": {"name": "variable.instruction.eet", "tooltip_name": "Data"}
+              "1": {"name": "entity.name.type.timestamp.eet", "tooltip_name": "Stream Time"},
+              "2": {"name": "constant.numeric.uat_index", "tooltip_name": "Unique Message Index"},
+              "3": {"name": "keyword.instruction_id.eet", "tooltip_name": "Instruction ID"},
+              "4": {"name": "variable.instruction.eet", "tooltip_name": "Data"}
           }
-        },
-		{
-			"include": "#auto_complete"
-		}
+        }
     ],
 	"repository": {
-		"keywords": {
-			"patterns": [{
-				"name": "keyword.control.eet",
-				"match": "\\b(if|while|for|return)\\b"
-			}]
-		},
 		"strings": {
 			"name": "string.quoted.double.eet",
 			"begin": "\"",
@@ -33,15 +24,6 @@
 					"match": "\\\\."
 				}
 			]
-		},
-		"auto_complete": {
-			"patterns": [
-				{
-					"name": "entity.name.tag.eet",
-					"match": "^[!][1-9][0-9]{2,3}$"
-				}
-			]
 		}
-	},
-	"scopeName": "source.eet"
+	}
 }

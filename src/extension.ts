@@ -1,6 +1,7 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
+import instructions = require('./300.json');
 
 const EET_LANGUAGE_CONFIG = require("./syntaxes/eet.tmLanguage.json").patterns[0];
 
@@ -43,6 +44,34 @@ export function activate(context: vscode.ExtensionContext) {
       };
     }
   	});
+	  
+	const provider1 = vscode.languages.registerCompletionItemProvider('eet', {
+
+		provideCompletionItems(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken, context: vscode.CompletionContext) {
+
+			const instruction_items = get_instruction_providers();
+			return instruction_items;
+		}
+	});
+
+	function get_instruction_providers() {
+		let declarations = instructions.instructions;
+		const providers = [];
+		for (let ins of declarations){
+			const item = new vscode.CompletionItem(`Instruction ${ins.id}: ${ins.name}}`);
+			let default_values = ins.fields.map((item) => {
+				return item.default;
+			  }).join(', ');
+			item.insertText = new vscode.SnippetString(`${ins.id}, <Ver: ${ins.version}>, ${default_values}`);
+			item.documentation = new vscode.MarkdownString(`Inserts ${ins.id} instruction with default values.`);
+
+			providers.push(item);
+		}
+
+		return providers;
+	}
+
+	context.subscriptions.push(provider1);
 }
 
 // this method is called when your extension is deactivated
