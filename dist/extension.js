@@ -38,17 +38,12 @@ const EET_LANGUAGE_CONFIG = (__webpack_require__(/*! ../syntaxes/eet.tmLanguage.
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 function activate(context) {
-    // Use the console to output diagnostic information (console.log) and errors (console.error)
-    // This line of code will only be executed once when your extension is activated
-    console.log('Congratulations, your extension "eet" is now active!');
-    // The command has been defined in the package.json file
-    // Now provide the implementation of the command with registerCommand
-    // The commandId parameter must match the command field in package.json
     vscode.languages.registerHoverProvider('eet', {
         provideHover(document, position, token) {
             let line = document.lineAt(position.line);
             let text = line.text;
             let items = text.split(',');
+            let fVersionTagPresent = version_tag_exists(items);
             let indexOfItem = text.substring(0, position.character + 1).split(',').length - 1;
             console.log(indexOfItem);
             let output = '';
@@ -63,15 +58,15 @@ function activate(context) {
                     output = 'Message ID';
                     break;
                 case 3:
-                    if (items[indexOfItem].trim().startsWith('<') && items[indexOfItem].trim().endsWith('>')) {
+                    if (fVersionTagPresent) {
                         output = 'Version Number';
                     }
                     else {
-                        output = get_field_name_by_index(parseInt(items[2]), indexOfItem - 3);
+                        output = get_field_name_by_index(parseInt(items[2]), fVersionTagPresent ? indexOfItem - 4 : indexOfItem - 3);
                     }
                     break;
                 default:
-                    output = get_field_name_by_index(parseInt(items[2]), indexOfItem - 3);
+                    output = get_field_name_by_index(parseInt(items[2]), fVersionTagPresent ? indexOfItem - 4 : indexOfItem - 3);
                     break;
             }
             return {
@@ -79,10 +74,18 @@ function activate(context) {
             };
         }
     });
+    function version_tag_exists(items) {
+        let version_tag_exists = false;
+        if (items.length >= 4) {
+            let trimmed_text = items[3].trim();
+            version_tag_exists = trimmed_text.startsWith("<") && trimmed_text.endsWith(">");
+        }
+        return version_tag_exists;
+    }
     function get_field_name_by_index(instruction_id, field_index) {
         const declarations = instructions.instructions;
         let match = declarations.find(x => x.id == instruction_id);
-        if (match != undefined) {
+        if (match !== undefined) {
             return `${match.fields[field_index].name}.\nrange: ${match.fields[field_index].min || '0'}- ${match.fields[field_index].max || ''}`;
         }
         return '';
@@ -97,7 +100,7 @@ function activate(context) {
         let declarations = instructions.instructions;
         const providers = [];
         for (let ins of declarations) {
-            const item = new vscode.CompletionItem(`Instruction ${ins.id}: ${ins.name}`);
+            const item = new vscode.CompletionItem(`create ${ins.id}: ${ins.name}`);
             let default_values = ins.fields.map((item) => {
                 return item.default;
             }).join(', ');
@@ -133,7 +136,7 @@ module.exports = require("vscode");
   \*******************************************/
 /***/ ((module) => {
 
-module.exports = JSON.parse('{"instructions":[{"id":300,"name":"Single Frame Broadcast - J1939, OBDII , Manufacturer Specific, GM LAN","version":1,"validation":"regex....","fields":[{"index":0,"name":"CAN Element Index","description":"Up to 399","default":0,"min":0,"max":399},{"index":1,"name":"Interface","description":"","default":0,"min":0,"max":66565},{"index":2,"name":"Arbitration ID","description":"Arbitration ID of the message to emulate","default":"0x1234","min":0,"max":66565},{"index":3,"name":"Frame Type","description":"11 bit or 29 bit (0 or 1)","default":"11-Bit"},{"index":4,"name":"DLC","description":"DLC of the message (0 to 8)","default":8,"min":0,"max":8},{"index":5,"name":"Data Bytes","description":"Hyphenated data bytes","default":"00-00-00-00-00-00-00-00","min":0,"max":8},{"index":6,"name":"Frequency","description":"Broadcast period in milliseconds.\\n0 to 60,000.\\n0 = one broadcast and then self disable.","default":0,"min":0,"max":60000},{"index":7,"name":"Broadcast Timing Offset (Phase Shift)","description":"Delay in milliseconds for broadcast to start after enabling.","default":0,"min":0,"max":99999999},{"index":8,"name":"Element Type","enum_id":"message_element_type","default":0}]},{"id":301,"name":"Single Frame Request - J1939, CAN OBDII\\\\Manufacturer Specific","version":3,"fields":[{"index":0,"name":"CAN Element Index","description":"Up to 399","default":0,"min":0,"max":399},{"index":1,"name":"Interface","description":"","default":0,"min":0,"max":66565},{"index":2,"name":"Req Arbitration ID","description":"Arbitration ID of the message to emulate","default":"0x1234","min":0,"max":66565},{"index":3,"name":"Frame Type","description":"11 bit or 29 bit (0 or 1)","default":"11-Bit"},{"index":4,"name":"DLC","description":"DLC of the message (0 to 8)","default":8,"min":0,"max":8},{"index":5,"name":"Data Bytes","description":"Hyphenated data bytes","default":"00-00-00-00-00-00-00-00","min":0,"max":8},{"index":6,"name":"Res Arbitration ID","description":"Arbitration ID of the message to emulate","default":"0x1234","min":0,"max":66565},{"index":7,"name":"Frame Type","description":"11 bit or 29 bit (0 or 1)","default":"11-Bit"},{"index":8,"name":"DLC","description":"DLC of the message (0 to 8)","default":8,"min":0,"max":8},{"index":9,"name":"Data Bytes","description":"Hyphenated data bytes","default":"00-00-00-00-00-00-00-00","min":0,"max":8},{"index":10,"name":"Response Delay","description":"Broadcast period in milliseconds.\\n0 to 60,000.\\n0 = one broadcast and then self disable.","default":0,"min":0,"max":60000},{"index":11,"name":"Element Type","enum_id":"message_element_type","default":0},{"index":12,"name":"Negative Response Enable/Disable","enum_id":"message_element_type","default":0},{"index":13,"name":"Negative Response Code","description":"The code sent out as a negative response\\n(1 Byte).\\nExample: 0x78\\nThis field only applies to OBDII.","default":0},{"index":14,"name":"Positive Response Delay","description":"Response Delay in milliseconds (2 Bytes).\\nRange: 0 to 4999.\\nThe first Negative response is sent out after the Response delay.\\nEvery other response (based on Negative Response Count and Negative Response Code) is sent out after a Positive Response Delay.\\nThis field only applies to OBDII.","default":0,"min":0,"max":4999},{"index":15,"name":"Negative Response Count ","description":"Number of times the Negative Response Code is sent out (1 Byte).\\nThis field only applies to OBDII.","default":0}]}]}');
+module.exports = JSON.parse('{"instructions":[{"id":300,"name":"Single Frame Broadcast - J1939, OBDII , Manufacturer Specific, GM LAN","version":1,"validation":"regex....","fields":[{"name":"CAN Element Index","description":"Up to 399","default":0,"min":0,"max":399},{"name":"Interface","description":"","default":0,"min":0,"max":66565},{"name":"Arbitration ID","description":"Arbitration ID of the message to emulate","default":"0x1234","min":0,"max":66565},{"name":"Frame Type","description":"11 bit or 29 bit (0 or 1)","default":"11-Bit"},{"name":"DLC","description":"DLC of the message (0 to 8)","default":8,"min":0,"max":8},{"name":"Data Bytes","description":"Hyphenated data bytes","default":"00-00-00-00-00-00-00-00","min":0,"max":8},{"name":"Frequency","description":"Broadcast period in milliseconds.\\n0 to 60,000.\\n0 = one broadcast and then self disable.","default":0,"min":0,"max":60000},{"name":"Broadcast Timing Offset (Phase Shift)","description":"Delay in milliseconds for broadcast to start after enabling.","default":0,"min":0,"max":99999999},{"name":"Element Type","enum_id":"message_element_type","default":0}]},{"id":301,"name":"Single Frame Request - J1939, CAN OBDII\\\\Manufacturer Specific","version":3,"fields":[{"name":"CAN Element Index","description":"Up to 399","default":0,"min":0,"max":399},{"name":"Interface","description":"","default":0,"min":0,"max":66565},{"name":"Req Arbitration ID","description":"Arbitration ID of the message to emulate","default":"0x1234","min":0,"max":66565},{"name":"Frame Type","description":"11 bit or 29 bit (0 or 1)","default":"11-Bit"},{"name":"DLC","description":"DLC of the message (0 to 8)","default":8,"min":0,"max":8},{"name":"Data Bytes","description":"Hyphenated data bytes","default":"00-00-00-00-00-00-00-00","min":0,"max":8},{"name":"Res Arbitration ID","description":"Arbitration ID of the message to emulate","default":"0x1234","min":0,"max":66565},{"name":"Frame Type","description":"11 bit or 29 bit (0 or 1)","default":"11-Bit"},{"name":"DLC","description":"DLC of the message (0 to 8)","default":8,"min":0,"max":8},{"name":"Data Bytes","description":"Hyphenated data bytes","default":"00-00-00-00-00-00-00-00","min":0,"max":8},{"name":"Response Delay","description":"Broadcast period in milliseconds.\\n0 to 60,000.\\n0 = one broadcast and then self disable.","default":0,"min":0,"max":60000},{"name":"Element Type","enum_id":"message_element_type","default":0},{"name":"Negative Response Enable/Disable","enum_id":"message_element_type","default":0},{"name":"Negative Response Code","description":"The code sent out as a negative response\\n(1 Byte).\\nExample: 0x78\\nThis field only applies to OBDII.","default":0},{"name":"Positive Response Delay","description":"Response Delay in milliseconds (2 Bytes).\\nRange: 0 to 4999.\\nThe first Negative response is sent out after the Response delay.\\nEvery other response (based on Negative Response Count and Negative Response Code) is sent out after a Positive Response Delay.\\nThis field only applies to OBDII.","default":0,"min":0,"max":4999},{"name":"Negative Response Count ","description":"Number of times the Negative Response Code is sent out (1 Byte).\\nThis field only applies to OBDII.","default":0}]}]}');
 
 /***/ }),
 

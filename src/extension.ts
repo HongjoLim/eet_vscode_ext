@@ -9,18 +9,12 @@ const EET_LANGUAGE_CONFIG = require("../syntaxes/eet.tmLanguage.json").patterns[
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "eet" is now active!');
-
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
 	vscode.languages.registerHoverProvider('eet', {
     	provideHover(document, position, token) {
 			let line = document.lineAt(position.line);
 			let text = line.text;
 			let items = text.split(',');
+			let fVersionTagPresent = version_tag_exists(items);
 			let indexOfItem = text.substring(0, position.character + 1).split(',').length - 1;
 			console.log(indexOfItem);
 
@@ -36,14 +30,14 @@ export function activate(context: vscode.ExtensionContext) {
 					output = 'Message ID';
 					break;
 				case 3:
-					if(items[indexOfItem].trim().startsWith('<') && items[indexOfItem].trim().endsWith('>')){
+					if(fVersionTagPresent){
 						output = 'Version Number';
 					}else{
-						output = get_field_name_by_index(parseInt(items[2]), indexOfItem - 3);
+						output = get_field_name_by_index(parseInt(items[2]), fVersionTagPresent ? indexOfItem - 4 : indexOfItem - 3);
 					}
 					break;
 				default:
-					output = get_field_name_by_index(parseInt(items[2]), indexOfItem - 3);
+					output = get_field_name_by_index(parseInt(items[2]), fVersionTagPresent ? indexOfItem - 4 : indexOfItem - 3);
 					break;
 			}
 			
@@ -53,10 +47,21 @@ export function activate(context: vscode.ExtensionContext) {
     }
   	});
 
+	  function version_tag_exists(items: string[]){
+		  let version_tag_exists = false;
+
+		  if(items.length >= 4){
+			  let trimmed_text = items[3].trim();
+			  version_tag_exists = trimmed_text.startsWith("<") && trimmed_text.endsWith(">"); 
+		  }
+
+		  return version_tag_exists;
+	  }
+
 	  function get_field_name_by_index(instruction_id: number, field_index: number){
 		const declarations = instructions.instructions;
 		let match = declarations.find(x => x.id == instruction_id);
-		if(match != undefined){
+		if(match !== undefined){
 			return `${match.fields[field_index].name}.\nrange: ${match.fields[field_index].min || '0'}- ${match.fields[field_index].max || ''}`;
 		}
 		
@@ -76,7 +81,7 @@ export function activate(context: vscode.ExtensionContext) {
 		let declarations = instructions.instructions;
 		const providers = [];
 		for (let ins of declarations){
-			const item = new vscode.CompletionItem(`Instruction ${ins.id}: ${ins.name}`);
+			const item = new vscode.CompletionItem(`create ${ins.id}: ${ins.name}`);
 			let default_values = ins.fields.map((item) => {
 				return item.default;
 			  }).join(', ');
