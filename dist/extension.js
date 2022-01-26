@@ -47,29 +47,46 @@ function activate(context) {
     vscode.languages.registerHoverProvider('eet', {
         provideHover(document, position, token) {
             let line = document.lineAt(position.line);
-            let parsed = line.text.match(EET_LANGUAGE_CONFIG.match);
+            let text = line.text;
+            let items = text.split(',');
+            let indexOfItem = text.substring(0, position.character + 1).split(',').length - 1;
+            console.log(indexOfItem);
             let output = '';
-            if (parsed != undefined) { //Ensure parsed data exists
-                //Take each tokenized capture group, save the length of the word
-                //compare against current cursor position to determine which group we are currently hovering over
-                let runningWordCharCount = 0;
-                for (let i = 1; i <= Math.min(parsed.length, Object.keys(EET_LANGUAGE_CONFIG.captures).length); i++) {
-                    //capture group count is the minimum of the number of captures in the regex, or the number of captures defined in the language spec
-                    if (parsed[i] != null) {
-                        runningWordCharCount += parsed[i].length;
-                        if (position.character < runningWordCharCount) {
-                            output = EET_LANGUAGE_CONFIG.captures[i].tooltip_name;
-                            break;
-                        }
+            switch (indexOfItem) {
+                case 0:
+                    output = 'stream time';
+                    break;
+                case 1:
+                    output = 'Unique Message Index';
+                    break;
+                case 2:
+                    output = 'Message ID';
+                    break;
+                case 3:
+                    if (items[indexOfItem].trim().startsWith('<') && items[indexOfItem].trim().endsWith('>')) {
+                        output = 'Version Number';
                     }
-                }
-                //Further processing of instruction hover can potentially be implemented here, based on instruction number, etc. This is left as an exercise to the reader!
+                    else {
+                        output = get_field_name_by_index(parseInt(items[2]), indexOfItem - 3);
+                    }
+                    break;
+                default:
+                    output = get_field_name_by_index(parseInt(items[2]), indexOfItem - 3);
+                    break;
             }
             return {
                 contents: [output]
             };
         }
     });
+    function get_field_name_by_index(instruction_id, field_index) {
+        const declarations = instructions.instructions;
+        let match = declarations.find(x => x.id == instruction_id);
+        if (match != undefined) {
+            return `${match.fields[field_index].name}.\nrange: ${match.fields[field_index].min || '0'}- ${match.fields[field_index].max || ''}`;
+        }
+        return '';
+    }
     const provider1 = vscode.languages.registerCompletionItemProvider('eet', {
         provideCompletionItems(document, position, token, context) {
             const instruction_items = get_instruction_providers();
@@ -126,7 +143,7 @@ module.exports = JSON.parse('{"instructions":[{"id":300,"name":"Single Frame Bro
   \**************************************/
 /***/ ((module) => {
 
-module.exports = JSON.parse('{"$schema":"https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json","scopeName":"source.eet","name":"EET","patterns":[{"match":"(?<=.*?)(//.*)|^([0-9]+,)([ ]?[0-9]+,)([ ]?[0-9]+,?)(([^/][^/]*))?","name":"eetgroup","captures":{"1":{"name":"comment.line.double-slash.eet","tooltip_name":""},"2":{"name":"entity.name.type.timestamp.eet","tooltip_name":"Stream Time"},"3":{"name":"constant.numeric.uat_index","tooltip_name":"Unique Message Index"},"4":{"name":"keyword.instruction_id.eet","tooltip_name":"Msg ID"},"5":{"name":"variable.instruction.eet","tooltip_name":"Data"}}}],"repository":{"strings":{"name":"string.quoted.double.eet","begin":"\\"","end":"\\"","patterns":[{"name":"constant.character.escape.eet","match":"\\\\\\\\."}]}}}');
+module.exports = JSON.parse('{"$schema":"https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json","scopeName":"source.eet","name":"EET","patterns":[{"match":"(?<=.*?)(//.*)|^([0-9]+,)([ ]?[0-9]+,)([ ]?[0-9]+,?)(([^/][^/]*))?","name":"eetgroup","captures":{"1":{"name":"comment.line.double-slash.eet","tooltip_name":""},"2":{"name":"entity.name.type.streamTime.eet","tooltip_name":"Stream Time"},"3":{"name":"constant.numeric.umi","tooltip_name":"Unique Message Index"},"4":{"name":"keyword.instruction_id.eet","tooltip_name":"Msg ID"},"5":{"name":"keyword.version_number.eet","tooltip_name":"Version Number"},"6":{"name":"variable.instruction.eet","tooltip_name":"Data"}}}],"repository":{"strings":{"name":"string.quoted.double.eet","begin":"\\"","end":"\\"","patterns":[{"name":"constant.character.escape.eet","match":"\\\\\\\\."}]}}}');
 
 /***/ })
 

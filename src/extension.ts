@@ -19,24 +19,32 @@ export function activate(context: vscode.ExtensionContext) {
 	vscode.languages.registerHoverProvider('eet', {
     	provideHover(document, position, token) {
 			let line = document.lineAt(position.line);
-			let parsed = line.text.match(EET_LANGUAGE_CONFIG.match)
-			
+			let text = line.text;
+			let items = text.split(',');
+			let indexOfItem = text.substring(0, position.character + 1).split(',').length - 1;
+			console.log(indexOfItem);
+
 			let output = '';
-			if (parsed != undefined) { //Ensure parsed data exists
-				//Take each tokenized capture group, save the length of the word
-				//compare against current cursor position to determine which group we are currently hovering over
-				let runningWordCharCount = 0;
-				for (let i = 1; i <= Math.min(parsed.length,Object.keys(EET_LANGUAGE_CONFIG.captures).length); i++) { 
-					//capture group count is the minimum of the number of captures in the regex, or the number of captures defined in the language spec
-					if (parsed[i] != null) {
-						runningWordCharCount += parsed[i].length;
-						if (position.character < runningWordCharCount) {
-							output = EET_LANGUAGE_CONFIG.captures[i].tooltip_name;
-							break;
-						 }
+			switch (indexOfItem){
+				case 0:
+					output = 'stream time';
+					break;
+				case 1:
+					output = 'Unique Message Index';
+					break;
+				case 2:
+					output = 'Message ID';
+					break;
+				case 3:
+					if(items[indexOfItem].trim().startsWith('<') && items[indexOfItem].trim().endsWith('>')){
+						output = 'Version Number';
+					}else{
+						output = get_field_name_by_index(parseInt(items[2]), indexOfItem - 3);
 					}
-				}
-				//Further processing of instruction hover can potentially be implemented here, based on instruction number, etc. This is left as an exercise to the reader!
+					break;
+				default:
+					output = get_field_name_by_index(parseInt(items[2]), indexOfItem - 3);
+					break;
 			}
 			
       	return {
@@ -44,6 +52,16 @@ export function activate(context: vscode.ExtensionContext) {
       };
     }
   	});
+
+	  function get_field_name_by_index(instruction_id: number, field_index: number){
+		const declarations = instructions.instructions;
+		let match = declarations.find(x => x.id == instruction_id);
+		if(match != undefined){
+			return `${match.fields[field_index].name}.\nrange: ${match.fields[field_index].min || '0'}- ${match.fields[field_index].max || ''}`;
+		}
+		
+		return '';
+	  }
 	  
 	const provider1 = vscode.languages.registerCompletionItemProvider('eet', {
 
