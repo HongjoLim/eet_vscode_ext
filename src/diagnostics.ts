@@ -73,8 +73,9 @@ function validateData(dataInCsv: string): string[] {
 	}
 
 	let version_number = 0;
-	let fVersionTagPresent = version_tag_exists(items);
+	let fVersionTagPresent = false;
 	if (items.length >= 4) {
+		fVersionTagPresent = version_tag_exists(items[3]);
 		if (fVersionTagPresent) {
 			version_number = get_version_number(items[3]);
 		}
@@ -86,11 +87,10 @@ function validateData(dataInCsv: string): string[] {
 	}
 
 	let instruction = repository.get_instruction_by_id_version_number(instruction_id, version_number);
-	let rule = '';
 	if (instruction != undefined) {
-		for (let i = 0; i < items.length - (fVersionTagPresent ? 4 : 3); i++) {
-			rule = repository.get_rules_by_field_name(instruction.fields[i].name) || '';
-			validator.validate_data_field(items[i], rule);
+		for (let fieldIndex = 0; fieldIndex < Math.min(instruction.fields.length, items.length - (fVersionTagPresent ? 4 : 3)); fieldIndex++) {
+			let rule = repository.get_rules_by_field_name(instruction.fields[fieldIndex].name) || '';
+			validator.validate_data_field(items[fieldIndex + (fVersionTagPresent ? 4 : 3)], rule);
 		}
 	}
 

@@ -24,7 +24,7 @@ export function validate_number_of_fields(instruction: { fields: [] }, fields: [
 }
 
 export function validate_data_field(field: string, rule: string){
-    if(rule != undefined){
+    if(rule != undefined && field != undefined){
         const regex = new RegExp(rule);
         return regex.test(field);
     }
