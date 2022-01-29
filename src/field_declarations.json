@@ -2,7 +2,6 @@
     "fields" : [
         {
             "name": "can_element_index",
-            "display_name": "CAN Element Index",
             "rule": "^(?<!-)\\b([1-3]?\\d{1,2}|399)\\b$"
         }
     ]

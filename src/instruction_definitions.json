@@ -7,39 +7,48 @@
             "fields": [
                 {
                     "name": "can_element_index",
-                    "default": 0
+                    "display_name": "CAN Element Index",
+                    "default": "0"
                 },
                 {
                     "name": "interface",
-                    "default": 0
+                    "display_name": "Interface",
+                    "default": "0"
                 },
                 {
                     "name": "arbitration_id",
-                    "default": 0
+                    "display_name": "Arbitration ID",
+                    "default": "0"
                 },
                 { 
                     "name": "frame_type",
-                    "default": 0
+                    "display_name": "Frame Type",
+                    "default": "0"
                 },
                 { 
                     "name": "dlc",
-                    "default": 0
+                    "display_name": "DLC",
+                    "default": "0"
                 },
                 { 
                     "name": "data_bytes",
-                    "default": 0
+                    "display_name": "Data Bytes",
+                    "default": "0"
                 },
                 { 
                     "name": "frequency",
-                    "default": 0
+                    "display_name": "Frequency",
+                    "default": "0"
                 },
                 { 
                     "name": "phase_shift",
-                    "default": 0
+                    "display_name": "Phase Shift",
+                    "default":"0"
                 },
                 { 
                     "name": "element_type",
-                    "default": 0
+                    "display_name": "Element Type",
+                    "default": "0"
                 }
             ]
         },
@@ -50,67 +59,83 @@
             "fields": [
                 {
                     "name": "can_element_index",
-                    "default": 0
+                    "display_name": "CAN Element Index",
+                    "default": "0"
                 },
                 {
                     "name": "interface",
-                    "default": 0
+                    "display_name": "Interface",
+                    "default": "0"
                 },
                 {
                     "name": "arbitration_id",
-                    "default": 0
+                    "display_name": "Request Arbitration ID",
+                    "default": "0"
                 },
                 { 
                     "name": "frame_type",
-                    "default": 0
+                    "display_name": "Request Frame Type",
+                    "default": "0"
                 },
                 { 
                     "name": "dlc",
-                    "default": 0
+                    "display_name": "Request DLC",
+                    "default": "0"
                 },
                 { 
                     "name": "data_bytes",
-                    "default": 0
+                    "display_name": "Request Data Bytes",
+                    "default": "0"
                 },
                 {
                     "name": "arbitration_id",
-                    "default": 0
+                    "display_name": "Response Arbitration ID",
+                    "default": "0"
                 },
                 { 
                     "name": "frame_type",
-                    "default": 0
+                    "display_name": "Frame Type",
+                    "default": "0"
                 },
                 { 
                     "name": "dlc",
-                    "default": 0
+                    "display_name": "DLC",
+                    "default": "0"
                 },
                 { 
                     "name": "data_bytes",
-                    "default": 0
+                    "display_name": "Response Data Bytes",
+                    "default": "0"
                 },
                 { 
                     "name": "response_delay",
-                    "default": 0
+                    "display_name": "Response Delay",
+                    "default": "0"
                 },
                 { 
                     "name": "element_type",
-                    "default": 0
+                    "display_name": "Element Type",
+                    "default": "0"
                 },
                 { 
                     "name": "negative_response_enable_disable",
-                    "default": 0
+                    "display_name": "Negative Response Enable / Disable",
+                    "default": "0"
                 },
                 { 
                     "name": "negative_response_code",
-                    "default": 0
+                    "display_name": "Negative Response Code",
+                    "default": "0"
                 },
                 { 
                     "name": "positive_response_delay",
-                    "default": 0
+                    "display_name": "Positive Response Delay",
+                    "default": "0"
                 },
                 { 
                     "name": "negative_response_count",
-                    "default": 0
+                    "display_name": "Negative Response Count",
+                    "default": "0"
                 }
             ]
         }
