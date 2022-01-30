@@ -11,7 +11,7 @@ export function get_instruction_by_id_version_number(instruction_id: number, ver
   return DECLARATIONS.find(x => x.id == instruction_id && x.version == version_number);
 }
 
-export function get_field_name_by_index(instruction: { fields: [{ name: string }] }, field_index: number) {
+export function get_field_name_by_index(instruction: { fields: [{ name: string }] }, field_index: number) : string {
   const match = instruction.fields[field_index].name;
   if (match !== undefined) {
     return match;

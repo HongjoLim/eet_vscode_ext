@@ -5,7 +5,7 @@ const COMMA_DELIMITER_RULE = /,(?=(?:[^"]*"[^"]*")*[^"]*$)/;
 const DESCRIPTION_DELIMITER_RULE = /\/\/(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/;
 import * as version_tag_helper from './version_tag_helper';
 
-export default function get_tooltip(text: string, positionIndex: number) {
+export default function get_tooltip(text: string, positionIndex: number) : string {
     const parsed = text.match(EET_LANGUAGE_CONFIG.match);
     let output = '';
 
@@ -74,10 +74,10 @@ export function parse_into_instruction(dataInCsv: string): {instruction: Instruc
     return undefined;
 }
 
-export function split_into_items(dataInCsv: string) {
+export function split_into_items(dataInCsv: string) : string[] {
     return dataInCsv.split(COMMA_DELIMITER_RULE) || [];
 }
 
-export function split_into_dataInCsv_and_description(line: string) {
+export function split_into_dataInCsv_and_description(line: string) : string[] {
     return line.split(DESCRIPTION_DELIMITER_RULE);
 }
