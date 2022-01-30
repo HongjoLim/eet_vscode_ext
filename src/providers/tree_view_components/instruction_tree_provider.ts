@@ -13,7 +13,7 @@ export class InstructionTreeProvider implements vscode.TreeDataProvider<vscode.T
   }
 
   private get_nodes(instruction_id:number): vscode.TreeItem[] {
-    const instruction = repository.get_instructions_by_id(instruction_id);
+    const instruction = repository.getInstructionsById(instruction_id);
 
     const to_instruction_node = (id: string, label: string): InstructionTreeItem => {
       return new InstructionTreeItem(

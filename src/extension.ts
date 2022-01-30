@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { subscribeToDocumentChanges } from './diagnostics';
 import create_instruction_with_default_values from './tools/utils';
 import * as repository from './tools/repository';
-import get_tooltip from './tools/instruction_parser';
+import getToolTip from './tools/instruction_parser';
 import { InstructionTreeProvider } from './providers/tree_view_components/instruction_tree_provider';
 
 const DOCUMENT_SELECTOR = 'eet';
@@ -19,7 +19,7 @@ export function activate(context: vscode.ExtensionContext) {
 		provideHover(document, position, token) {
 
 			let line = document.lineAt(position.line);
-			let output = get_tooltip(line.text, position.character);
+			let output = getToolTip(line.text, position.character);
 			return { contents: [output] };
 		}
 	});

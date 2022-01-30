@@ -24,6 +24,16 @@
             "name": "element_type",
             "regex": "^[0-1]$",
             "error_message": "either 0 or 1"
+        },
+        { 
+            "name": "enable_status",
+            "regex": "^[0-1]$",
+            "error_message": "either 0 or 1"
+        },
+        { 
+            "name": "break_point_id",
+            "regex": "^[0-1]$",
+            "error_message": "either 0 or 1"
         }
     ]
 }
