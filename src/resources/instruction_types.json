@@ -1,0 +1,32 @@
+{
+    "types" : [
+        {
+            "label": "Engine Data Instructions",
+            "instruction_ids": [300, 301]
+        },
+        {
+            "label": "IOX Instructions",
+            "instruction_ids": []
+        },
+        {
+            "label": "Validation Instructions",
+            "instruction_ids": []
+        },
+        {
+            "label": "EME Instructions",
+            "instruction_ids": []
+        },
+        {
+            "label": "ECU Update Instructions",
+            "instruction_ids": []
+        },
+        {
+            "label": "Dynamic Trigger Instructions",
+            "instruction_ids": []
+        },
+        {
+            "label": "Other Instructions",
+            "instruction_ids": []
+        }
+    ]
+}

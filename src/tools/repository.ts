@@ -27,11 +27,20 @@ export function get_field_name_by_index(instruction: { fields: [{ name: string }
   return '';
 }
 
-export function get_rules_by_field_name(field_name: string) {
+export function get_regex_rule_by_field_name(field_name: string) {
   if(field_name != undefined){
     const field = FILED_RULES.fields.find(x => x.name == field_name);
     if(field != undefined){
-      return field.rule;
+      return field.regex;
+    }
+  }
+}
+
+export function get_erorr_message_by_field_name(field_name: string){
+  if(field_name != undefined){
+    const field = FILED_RULES.fields.find(x => x.name == field_name);
+    if(field != undefined){
+      return field.error_message;
     }
   }
 }

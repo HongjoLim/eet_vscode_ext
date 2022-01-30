@@ -3,7 +3,7 @@ import * as parser from './tools/instruction_parser';
 import * as validator from './tools/instruction_validator';
 
 /** Code that is used to associate diagnostic entries with code actions. */
-export const EMOJI_MENTION = 'incorrect_message_format';
+export const INCORRECT_FORMAT_ERROR = 'incorrect message format';
 
 /** String to detect in the text document. */
 const EET_LANGUAGE_CONFIG = require("../syntaxes/eet.tmLanguage.json").patterns[0];
@@ -22,7 +22,7 @@ export function refreshDiagnostics(doc: vscode.TextDocument, formatDiagnostics: 
 		const parsed = text.match(EET_LANGUAGE_CONFIG.match);
 
 		if (parsed === undefined) {
-			diagnostics.push(createDiagnostic(['Message not in correct format'], i, text.length));
+			diagnostics.push(createDiagnostic([INCORRECT_FORMAT_ERROR], i, text.length));
 			continue;
 		}
 
@@ -46,7 +46,7 @@ export function refreshDiagnostics(doc: vscode.TextDocument, formatDiagnostics: 
 function createDiagnostic(errors: string[], lineIndex: number, length: number): vscode.Diagnostic {
 	const range = new vscode.Range(lineIndex, 0, lineIndex, length);
 	const diagnostic = new vscode.Diagnostic(range, errors.join('\n\n'), vscode.DiagnosticSeverity.Error);
-	diagnostic.code = EMOJI_MENTION;
+	diagnostic.code = INCORRECT_FORMAT_ERROR;
 	return diagnostic;
 }
 

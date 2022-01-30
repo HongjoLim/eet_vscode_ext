@@ -32,7 +32,7 @@ export function validate_number_of_fields(instruction: { fields: [] }, fields: [
 export function validate_data_field(field: string, rule: string): boolean {
     if (rule != undefined && field != undefined) {
         const regex = new RegExp(rule);
-        return regex.test(field);
+        return regex.test(field.trim());
     }
     return false;
 }
@@ -78,8 +78,14 @@ export function validateData(dataInCsv: string): string[] {
     let instruction = repository.get_instruction_by_id_version_number(instruction_id, version_number);
     if (instruction != undefined) {
         for (let fieldIndex = 0; fieldIndex < Math.min(instruction.fields.length, items.length - (fVersionTagPresent ? 4 : 3)); fieldIndex++) {
-            let rule = repository.get_rules_by_field_name(instruction.fields[fieldIndex].name) || '';
-            validate_data_field(items[fieldIndex + (fVersionTagPresent ? 4 : 3)], rule);
+            let rule = repository.get_regex_rule_by_field_name(instruction.fields[fieldIndex].name) || '';
+
+            const field_valid = validate_data_field(items[fieldIndex + (fVersionTagPresent ? 4 : 3)], rule);
+
+            if(!field_valid){
+                const error_message = repository.get_erorr_message_by_field_name(instruction.fields[fieldIndex].name);
+                errors.push(`Invalid input for ${instruction.fields[fieldIndex].display_name}. ${instruction.fields[fieldIndex].display_name} ${error_message}.`);
+            }
         }
     }
 
