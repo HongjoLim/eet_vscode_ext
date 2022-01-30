@@ -1,8 +1,14 @@
-import instructions = require('../instruction_definitions.json');
-import field_rules = require('../field_declarations.json');
+import instructions = require('../resources/instruction_definitions.json');
+import instruction_types = require('../resources/instruction_types.json');
+import field_rules = require('../resources/field_declarations.json');
 
+export const INSTRUCTION_TYPES = instruction_types;
 export const DECLARATIONS = instructions.instructions;
 export const FILED_RULES = field_rules;
+
+export function get_all_instruction_types(){
+  return INSTRUCTION_TYPES.types;
+}
 
 export function get_instructions_by_id(instruction_id: number) {
   return DECLARATIONS.find(x => x.id == instruction_id);

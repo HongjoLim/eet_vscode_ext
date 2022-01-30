@@ -3,6 +3,7 @@ import { subscribeToDocumentChanges } from './diagnostics';
 import create_instruction_with_default_values from './tools/utils';
 import * as repository from './tools/repository';
 import get_tooltip from './tools/instruction_parser';
+import { InstructionTreeProvider } from './providers/tree_view_components/instruction_tree_provider';
 
 const DOCUMENT_SELECTOR = 'eet';
 
@@ -23,6 +24,10 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 	});
 
+	vscode.window.createTreeView('eet_instruction', {
+		treeDataProvider: new InstructionTreeProvider()
+	});
+
 	const provider1 = vscode.languages.registerCompletionItemProvider(DOCUMENT_SELECTOR, {
 
 		provideCompletionItems(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken, context: vscode.CompletionContext) {
@@ -36,7 +41,7 @@ export function activate(context: vscode.ExtensionContext) {
 		for (let ins of repository.DECLARATIONS) {
 			const item = new vscode.CompletionItem(`new ${ins.id}: ${ins.name}`);
 			let default_values = create_instruction_with_default_values(ins.fields);
-			item.insertText = new vscode.SnippetString(`${ins.id}, <Ver: ${ins.version}>, ${default_values}`);
+			item.insertText = new vscode.SnippetString(`0, 0, ${ins.id}, <Ver: ${ins.version}>, ${default_values}`);
 			item.documentation = new vscode.MarkdownString(`Inserts ${ins.id} instruction with default values.`);
 
 			providers.push(item);
