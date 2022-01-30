@@ -3,7 +3,7 @@ import * as parser from './tools/instruction_parser';
 import * as validator from './tools/instruction_validator';
 
 /** Code that is used to associate diagnostic entries with code actions. */
-export const EMOJI_MENTION = 'incorrect_message_format';
+export const INCORRECT_FORMAT_ERROR = 'incorrect message format';
 
 /** String to detect in the text document. */
 const EET_LANGUAGE_CONFIG = require("../syntaxes/eet.tmLanguage.json").patterns[0];
@@ -22,11 +22,11 @@ export function refreshDiagnostics(doc: vscode.TextDocument, formatDiagnostics: 
 		const parsed = text.match(EET_LANGUAGE_CONFIG.match);
 
 		if (parsed === undefined) {
-			diagnostics.push(createDiagnostic(['Message not in correct format'], i, text.length));
+			diagnostics.push(createDiagnostic(INCORRECT_FORMAT_ERROR, i, 0, i, text.length - 1));
 			continue;
 		}
 
-		let [dataInCsv, description] = parser.split_into_dataInCsv_and_description(text);
+		let [dataInCsv, description] = parser.splitDataDescription(text);
 
 		if (dataInCsv.trim() == '') {
 			continue;
@@ -34,8 +34,8 @@ export function refreshDiagnostics(doc: vscode.TextDocument, formatDiagnostics: 
 
 		const errors = validator.validateData(dataInCsv);
 
-		if (errors.length > 0) {
-			diagnostics.push(createDiagnostic(errors, i, dataInCsv.length - 1));
+		for(let error of errors){
+			diagnostics.push(createDiagnostic(error.message, i, error.startChar, i, error.endChar));
 		}
 
 	}
@@ -43,10 +43,10 @@ export function refreshDiagnostics(doc: vscode.TextDocument, formatDiagnostics: 
 	formatDiagnostics.set(doc.uri, diagnostics);
 }
 
-function createDiagnostic(errors: string[], lineIndex: number, length: number): vscode.Diagnostic {
-	const range = new vscode.Range(lineIndex, 0, lineIndex, length);
-	const diagnostic = new vscode.Diagnostic(range, errors.join('\n\n'), vscode.DiagnosticSeverity.Error);
-	diagnostic.code = EMOJI_MENTION;
+function createDiagnostic(error: string, startLine: number, startCharacter: number, endLine: number, endCharacter: number): vscode.Diagnostic {
+	const range = new vscode.Range(startLine, startCharacter, endLine, endCharacter);
+	const diagnostic = new vscode.Diagnostic(range, error, vscode.DiagnosticSeverity.Error);
+	diagnostic.code = INCORRECT_FORMAT_ERROR;
 	return diagnostic;
 }
 

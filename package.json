@@ -33,7 +33,15 @@
                 "scopeName": "source.eet",
                 "path": "./syntaxes/eet.tmLanguage.json"
             }
-        ]
+        ],
+        "views": {
+            "explorer": [
+              {
+                "id": "eet_instruction",
+                "name": "EET Instruction"
+              }
+            ]
+          }
     },
     "scripts": {
         "vscode:prepublish": "npm run package",

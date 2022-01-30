@@ -1,11 +1,12 @@
 import * as repository from './repository';
 import { Instruction } from '../models/instruction';
+import * as validator from './instruction_validator';
 
 const EET_LANGUAGE_CONFIG = require("../syntaxes/eet.tmLanguage.json").patterns[0];
 const COMMA_DELIMITER_RULE = /,(?=(?:[^"]*"[^"]*")*[^"]*$)/;
 const DESCRIPTION_DELIMITER_RULE = /\/\/(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/;
 
-export default function get_tooltip(text: string, positionIndex: number) : string {
+export default function getToolTip(text: string, positionIndex: number) : string {
     const parsed = text.match(EET_LANGUAGE_CONFIG.match);
     let output = '';
 
@@ -13,10 +14,10 @@ export default function get_tooltip(text: string, positionIndex: number) : strin
         return output;
     }
 
-    let [dataInCsv, description] = split_into_dataInCsv_and_description(text);
+    let [dataInCsv, description] = splitDataDescription(text);
 
     if (dataInCsv != '') {
-        const instruction = parse_into_instruction(dataInCsv);
+        const instruction = parseToInstruction(dataInCsv);
         const index = text.substring(0, positionIndex + 1).split(COMMA_DELIMITER_RULE).length - 1;
 
         switch (index) {
@@ -34,7 +35,7 @@ export default function get_tooltip(text: string, positionIndex: number) : strin
                     output = `Version Number`;
                 }
                 else{
-                    output = `${instruction?.instruction.get_field_displayname_by_index(index - (instruction.version_tag_present ? 4 : 3)) || ``}`;
+                    output = `${instruction?.instruction.getFieldDisplayNameByIndex(index - (instruction.version_tag_present ? 4 : 3)) || ``}`;
                 }
                 break;
         }
@@ -43,8 +44,8 @@ export default function get_tooltip(text: string, positionIndex: number) : strin
     return output;
 }
 
-export function parse_into_instruction(dataInCsv: string): {instruction: Instruction; version_tag_present: boolean } | undefined {
-    const items = split_into_items(dataInCsv);
+export function parseToInstruction(dataInCsv: string): {instruction: Instruction; version_tag_present: boolean } | undefined {
+    const items = SplitIntoItems(dataInCsv);
 
     if (items.length < 3) {
         return undefined;
@@ -58,36 +59,36 @@ export function parse_into_instruction(dataInCsv: string): {instruction: Instruc
 
     if(items.length >= 4){
 
-        fVersionTagPresent = version_tag_exists(items[3]);
+        fVersionTagPresent = versionTagExists(items[3]);
 
         if (fVersionTagPresent) {
-            version = get_version_number(items[3]);
+            version = getVersionNumber(items[3]);
         }
     }
 
-    let instruction = repository.get_instruction_by_id_version_number(instruction_id, version);
+    let instruction = repository.getInstructionByIdVersionNumber(instruction_id, version);
 
     if (instruction != undefined) {
         return {instruction: new Instruction(stream_time, umi, instruction_id, instruction.name, version, instruction.fields), version_tag_present: fVersionTagPresent};
     } else{
-        instruction = repository.get_instructions_by_id(instruction_id);
+        instruction = repository.getInstructionsById(instruction_id);
         return {instruction: new Instruction(stream_time, umi, instruction_id, instruction?.name || '', version, []), version_tag_present: fVersionTagPresent};
     }
 }
 
-export function split_into_items(dataInCsv: string) : string[] {
+export function SplitIntoItems(dataInCsv: string) : string[] {
     return dataInCsv.split(COMMA_DELIMITER_RULE) || [];
 }
 
-export function split_into_dataInCsv_and_description(line: string) : string[] {
+export function splitDataDescription(line: string) : string[] {
     return line.split(DESCRIPTION_DELIMITER_RULE);
 }
 
-export function get_version_number(version_tag: string){
-    let version_number = version_tag.match(/\d+/)?.shift() || '0';
+export function getVersionNumber(version_tag: string){
+    let version_number = version_tag.match(validator.NUMERIC_FIELD_RULE)?.shift() || '0';
     return parseInt(version_number);
 }
 
-export function version_tag_exists(item: string){
-    return item.match(/<[vV][eE][rR]\s*:\s*\d*\s*>/) != undefined;
+export function versionTagExists(item: string){
+    return item.match(validator.VERSION_TAG_RULE) != undefined;
 }

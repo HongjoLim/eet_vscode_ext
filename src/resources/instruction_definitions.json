@@ -1,140 +1,183 @@
 {
     "instructions" : [
         {
+            "id": 100,
+            "name": "Comment",
+            "version": 0,
+            "fields": [
+                {
+                    "name": "destination_filter",
+                    "default": "0"
+                },
+                {
+                    "name": "comment",
+                    "default": "\"\""
+                }
+            ]
+        },
+        {
+            "id": 101,
+            "name": "Break Point Tag",
+            "version": 0,
+            "fields": [
+                {
+                    "name": "break_point_id",
+                    "default": "0"
+                }
+            ]
+        },
+        {
+            "id": 103,
+            "name": "Enable Sniffer Logs",
+            "version": 0,
+            "fields": [
+                {
+                    "name": "interface",
+                    "default": "0"
+                },
+                {
+                    "name": "enable_status",
+                    "default": "0"
+                }
+            ]
+        },
+        {
+            "id": 104,
+            "name": "Scan Rate",
+            "version": 0,
+            "fields": [
+                {
+                    "name": "dynamic_trigger_token",
+                    "default": "0x00"
+                },
+                {
+                    "name": "dynamic_trigger_time_offset",
+                    "default": "0"
+                },
+                {
+                    "name": "go_scan_period",
+                    "default": "100"
+                },
+                {
+                    "name": "new_go_scan_period_revert_time",
+                    "default": "0"
+                },
+                {
+                    "name": "global_scan_period",
+                    "default": "0"
+                }
+            ]
+        },
+        {
             "id": 300,
             "name": "Single Frame Broadcast - J1939, OBDII , Manufacturer Specific, GM LAN",
             "version": 1,
             "fields": [
                 {
                     "name": "can_element_index",
-                    "display_name": "CAN Element Index",
                     "default": "0"
                 },
                 {
                     "name": "interface",
-                    "display_name": "Interface",
                     "default": "0"
                 },
                 {
                     "name": "arbitration_id",
-                    "display_name": "Arbitration ID",
                     "default": "0"
                 },
                 { 
                     "name": "frame_type",
-                    "display_name": "Frame Type",
                     "default": "0"
                 },
                 { 
                     "name": "dlc",
-                    "display_name": "DLC",
                     "default": "0"
                 },
                 { 
                     "name": "data_bytes",
-                    "display_name": "Data Bytes",
-                    "default": "0"
+                    "default": "00"
                 },
                 { 
                     "name": "frequency",
-                    "display_name": "Frequency",
                     "default": "0"
                 },
                 { 
                     "name": "phase_shift",
-                    "display_name": "Phase Shift",
                     "default":"0"
                 },
                 { 
                     "name": "element_type",
-                    "display_name": "Element Type",
                     "default": "0"
                 }
             ]
         },
         {
             "id": 301,
-            "name": "Single Frame Request - J1939, CAN OBDII\\Manufacturer Specific",
+            "name": "Single Frame Request - J1939, CAN OBDII \\ Manufacturer Specific",
             "version": 3,
             "fields": [
                 {
                     "name": "can_element_index",
-                    "display_name": "CAN Element Index",
                     "default": "0"
                 },
                 {
                     "name": "interface",
-                    "display_name": "Interface",
                     "default": "0"
                 },
                 {
                     "name": "arbitration_id",
-                    "display_name": "Request Arbitration ID",
                     "default": "0"
                 },
                 { 
                     "name": "frame_type",
-                    "display_name": "Request Frame Type",
                     "default": "0"
                 },
                 { 
                     "name": "dlc",
-                    "display_name": "Request DLC",
                     "default": "0"
                 },
                 { 
                     "name": "data_bytes",
-                    "display_name": "Request Data Bytes",
                     "default": "0"
                 },
                 {
                     "name": "arbitration_id",
-                    "display_name": "Response Arbitration ID",
                     "default": "0"
                 },
                 { 
                     "name": "frame_type",
-                    "display_name": "Frame Type",
                     "default": "0"
                 },
                 { 
                     "name": "dlc",
-                    "display_name": "DLC",
                     "default": "0"
                 },
                 { 
                     "name": "data_bytes",
-                    "display_name": "Response Data Bytes",
                     "default": "0"
                 },
                 { 
                     "name": "response_delay",
-                    "display_name": "Response Delay",
                     "default": "0"
                 },
                 { 
                     "name": "element_type",
-                    "display_name": "Element Type",
                     "default": "0"
                 },
                 { 
                     "name": "negative_response_enable_disable",
-                    "display_name": "Negative Response Enable / Disable",
                     "default": "0"
                 },
                 { 
                     "name": "negative_response_code",
-                    "display_name": "Negative Response Code",
                     "default": "0"
                 },
                 { 
                     "name": "positive_response_delay",
-                    "display_name": "Positive Response Delay",
                     "default": "0"
                 },
                 { 
                     "name": "negative_response_count",
-                    "display_name": "Negative Response Count",
                     "default": "0"
                 }
             ]
