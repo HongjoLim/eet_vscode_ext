@@ -1,5 +1,6 @@
 import instructions = require('../instruction_definitions.json');
 import field_rules = require('../field_declarations.json');
+
 export const DECLARATIONS = instructions.instructions;
 export const FILED_RULES = field_rules;
 

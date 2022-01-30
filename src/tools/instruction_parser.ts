@@ -1,9 +1,9 @@
 import * as repository from './repository';
 import { Instruction } from '../models/instruction';
+
 const EET_LANGUAGE_CONFIG = require("../syntaxes/eet.tmLanguage.json").patterns[0];
 const COMMA_DELIMITER_RULE = /,(?=(?:[^"]*"[^"]*")*[^"]*$)/;
 const DESCRIPTION_DELIMITER_RULE = /\/\/(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/;
-import * as version_tag_helper from './version_tag_helper';
 
 export default function get_tooltip(text: string, positionIndex: number) : string {
     const parsed = text.match(EET_LANGUAGE_CONFIG.match);
@@ -58,20 +58,21 @@ export function parse_into_instruction(dataInCsv: string): {instruction: Instruc
 
     if(items.length >= 4){
 
-        fVersionTagPresent = version_tag_helper.version_tag_exists(items[3]);
+        fVersionTagPresent = version_tag_exists(items[3]);
 
         if (fVersionTagPresent) {
-            version = version_tag_helper.get_version_number(items[3]);
+            version = get_version_number(items[3]);
         }
     }
 
-    const instruction = repository.get_instruction_by_id_version_number(instruction_id, version);
+    let instruction = repository.get_instruction_by_id_version_number(instruction_id, version);
 
     if (instruction != undefined) {
         return {instruction: new Instruction(stream_time, umi, instruction_id, instruction.name, version, instruction.fields), version_tag_present: fVersionTagPresent};
+    } else{
+        instruction = repository.get_instructions_by_id(instruction_id);
+        return {instruction: new Instruction(stream_time, umi, instruction_id, instruction?.name || '', version, []), version_tag_present: fVersionTagPresent};
     }
-
-    return undefined;
 }
 
 export function split_into_items(dataInCsv: string) : string[] {
@@ -80,4 +81,13 @@ export function split_into_items(dataInCsv: string) : string[] {
 
 export function split_into_dataInCsv_and_description(line: string) : string[] {
     return line.split(DESCRIPTION_DELIMITER_RULE);
+}
+
+export function get_version_number(version_tag: string){
+    let version_number = version_tag.match(/\d+/)?.shift() || '0';
+    return parseInt(version_number);
+}
+
+export function version_tag_exists(item: string){
+    return item.match(/<[vV][eE][rR]\s*:\s*\d*\s*>/) != undefined;
 }

@@ -1,9 +1,6 @@
-import { version } from 'os';
 import * as vscode from 'vscode';
 import * as parser from './tools/instruction_parser';
 import * as validator from './tools/instruction_validator';
-import * as repository from './tools/repository';
-import { get_version_number, version_tag_exists } from './tools/version_tag_helper';
 
 /** Code that is used to associate diagnostic entries with code actions. */
 export const EMOJI_MENTION = 'incorrect_message_format';
@@ -35,7 +32,7 @@ export function refreshDiagnostics(doc: vscode.TextDocument, formatDiagnostics: 
 			continue;
 		}
 
-		const errors = validateData(dataInCsv);
+		const errors = validator.validateData(dataInCsv);
 
 		if (errors.length > 0) {
 			diagnostics.push(createDiagnostic(errors, i, dataInCsv.length - 1));
@@ -51,50 +48,6 @@ function createDiagnostic(errors: string[], lineIndex: number, length: number): 
 	const diagnostic = new vscode.Diagnostic(range, errors.join('\n\n'), vscode.DiagnosticSeverity.Error);
 	diagnostic.code = EMOJI_MENTION;
 	return diagnostic;
-}
-
-function validateData(dataInCsv: string): string[] {
-	let items = parser.split_into_items(dataInCsv);
-	let errors = [];
-
-	if (!validator.validate_stream_time(items[0])) {
-		errors.push("Stream time: must be a numeric value");
-	}
-
-	if (!validator.validate_umi(items[1])) {
-		errors.push("Unique Message Index: must be a numeric value");
-	}
-
-	let instruction_id = parseInt(items[2]) || 0;
-
-	if (!validator.validate_instruction_id(instruction_id)) {
-		errors.push("Instruction ID: not supported");
-		return errors;
-	}
-
-	let version_number = 0;
-	let fVersionTagPresent = false;
-	if (items.length >= 4) {
-		fVersionTagPresent = version_tag_exists(items[3]);
-		if (fVersionTagPresent) {
-			version_number = get_version_number(items[3]);
-		}
-	}
-
-	if (!validator.validate_version_number(instruction_id, version_number)) {
-		errors.push("Invalid Version: not supported");
-		return errors;
-	}
-
-	let instruction = repository.get_instruction_by_id_version_number(instruction_id, version_number);
-	if (instruction != undefined) {
-		for (let fieldIndex = 0; fieldIndex < Math.min(instruction.fields.length, items.length - (fVersionTagPresent ? 4 : 3)); fieldIndex++) {
-			let rule = repository.get_rules_by_field_name(instruction.fields[fieldIndex].name) || '';
-			validator.validate_data_field(items[fieldIndex + (fVersionTagPresent ? 4 : 3)], rule);
-		}
-	}
-
-	return errors;
 }
 
 export function subscribeToDocumentChanges(context: vscode.ExtensionContext, formatDiagnostics: vscode.DiagnosticCollection): void {
