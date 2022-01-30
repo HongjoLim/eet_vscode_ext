@@ -10,8 +10,7 @@
 			"2": {"name": "entity.name.type.streamTime.eet"},
 			"3": {"name": "constant.numeric.umi"},
 			"4": {"name": "keyword.instruction_id.eet"},
-			"5": {"name": "meta.cast"},
-			"6": {"name": "variable.instruction.eet"}
+			"5": {"name": "variable.instruction.eet"}
           }
         }
     ],

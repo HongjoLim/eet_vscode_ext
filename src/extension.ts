@@ -15,16 +15,14 @@ export function activate(context: vscode.ExtensionContext) {
 	subscribeToDocumentChanges(context, messageDiagnostics);
 
 	vscode.languages.registerHoverProvider(DOCUMENT_SELECTOR, {
-    	provideHover(document, position, token) {
+		provideHover(document, position, token) {
 
 			let line = document.lineAt(position.line);
-			let text = line.text;
-			let output = get_tooltip(text, position.character);
-			
-      	return {contents: [output]};
-    }
-  	});
-	  
+			let output = get_tooltip(line.text, position.character);
+			return { contents: [output] };
+		}
+	});
+
 	const provider1 = vscode.languages.registerCompletionItemProvider(DOCUMENT_SELECTOR, {
 
 		provideCompletionItems(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken, context: vscode.CompletionContext) {
@@ -35,11 +33,10 @@ export function activate(context: vscode.ExtensionContext) {
 
 	function get_instruction_providers() {
 		const providers = [];
-		for (let ins of repository.DECLARATIONS){
-			const item = new vscode.CompletionItem(`create ${ins.id}: ${ins.name}`);
-			let version_number = ins.version;
+		for (let ins of repository.DECLARATIONS) {
+			const item = new vscode.CompletionItem(`new ${ins.id}: ${ins.name}`);
 			let default_values = create_instruction_with_default_values(ins.fields);
-			item.insertText = new vscode.SnippetString(`${ins.id}, <Ver: ${version_number}>, ${default_values}`);
+			item.insertText = new vscode.SnippetString(`${ins.id}, <Ver: ${ins.version}>, ${default_values}`);
 			item.documentation = new vscode.MarkdownString(`Inserts ${ins.id} instruction with default values.`);
 
 			providers.push(item);
@@ -52,4 +49,4 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 // this method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() { }
