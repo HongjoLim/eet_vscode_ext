@@ -4,6 +4,7 @@ import * as utils from './tools/utils';
 import * as repository from './tools/repository';
 import getToolTip from './tools/instruction_parser';
 import { InstructionTreeProvider } from './providers/tree_view_components/instruction_tree_provider';
+import { InstructionValidationService } from './tools/validator';
 
 const DOCUMENT_SELECTOR = 'eet';
 
@@ -13,7 +14,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	const messageDiagnostics = vscode.languages.createDiagnosticCollection("emoji");
 	context.subscriptions.push(messageDiagnostics);
-	subscribeToDocumentChanges(context, messageDiagnostics);
+	subscribeToDocumentChanges(new InstructionValidationService(), context, messageDiagnostics);
 
 	vscode.languages.registerHoverProvider(DOCUMENT_SELECTOR, {
 		provideHover(document, position, token) {
@@ -38,7 +39,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	function get_instruction_providers() {
 		const providers = [];
-		for (let ins of repository.DECLARATIONS) {
+		for (let ins of repository.getAllInstructions()) {
 			const item = new vscode.CompletionItem(`new ${ins.id}: ${ins.name}`);
 			let default_values = utils.create_instruction_with_default_values(ins.fields);
 			item.insertText = new vscode.SnippetString(`0, 0, ${ins.id}, <Ver: ${ins.version}>, ${default_values}`);
