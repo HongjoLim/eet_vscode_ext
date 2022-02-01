@@ -29,9 +29,9 @@ export function validate_number_of_fields(instruction: { fields: [] }, fields: [
     return instruction.fields.length == fields.length;
 }
 
-export function validate_data_field(field: string, rule: string): boolean {
+export function validate_with_regex(field: string, rule: string): boolean {
     if (rule != undefined && field != undefined) {
-        const regex = new RegExp(rule);
+        const regex = new RegExp(rule, "i");
         return regex.test(field.trim());
     }
     return false;
@@ -90,7 +90,7 @@ export function validateData(dataInCsv: string): {message: string, startChar: nu
             let rule = repository.getRegexRuleByFieldName(instruction.fields[fieldIndex].name) || '';
 
             let index = fieldIndex + (fVersionTagPresent ? 4 : 3)
-            const field_valid = validate_data_field(items[index], rule);
+            const field_valid = validate_with_regex(items[index], rule);
 
             if(!field_valid){
                 const error_message = repository.get_erorr_message_by_field_name(instruction.fields[fieldIndex].name);

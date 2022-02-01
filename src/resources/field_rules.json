@@ -12,8 +12,13 @@
         },
         { 
             "name": "dlc",
-            "regex": "^[0-8]$",
+            "regex": "^[1-8]$",
             "error_message": "from 1 to 8"
+        },
+        { 
+            "name": "data_bytes",
+            "regex": "([0-9,A-F]{2}-){1,8}",
+            "error_message": "from 1 to 8 byte hyphenated string"
         },
         {
             "name": "arbitration_id",
@@ -27,7 +32,7 @@
         },
         { 
             "name": "enable_status",
-            "regex": "^[0-1]$",
+            "regex": "^[0-1]$|^(ENABLE|DISABLE)$",
             "error_message": "either 0 or 1"
         },
         { 

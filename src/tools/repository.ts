@@ -1,6 +1,6 @@
 import instructions = require('../resources/instruction_definitions.json');
 import instruction_types = require('../resources/instruction_types.json');
-import field_rules = require('../resources/field_declarations.json');
+import field_rules = require('../resources/field_rules.json');
 
 export const INSTRUCTION_TYPES = instruction_types;
 export const DECLARATIONS = instructions.instructions;
