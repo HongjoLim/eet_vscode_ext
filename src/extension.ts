@@ -2,7 +2,6 @@ import * as vscode from 'vscode';
 import { subscribeToDocumentChanges } from './diagnostics';
 import * as utils from './tools/utils';
 import * as repository from './tools/repository';
-import { InstructionTreeProvider } from './providers/tree_view_components/instruction_tree_provider';
 import { InstructionValidationService } from './tools/validator';
 import { Parser } from './tools/parser';
 
@@ -24,10 +23,6 @@ export function activate(context: vscode.ExtensionContext) {
 			let output = parser.getToolTip(line.text, position.character);
 			return { contents: [output] };
 		}
-	});
-
-	vscode.window.createTreeView('eet_instruction', {
-		treeDataProvider: new InstructionTreeProvider()
 	});
 
 	const provider1 = vscode.languages.registerCompletionItemProvider(DOCUMENT_SELECTOR, {

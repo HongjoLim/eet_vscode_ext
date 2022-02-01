@@ -1,17 +1,7 @@
-<<<<<<< HEAD
-import instructions = require('../resources/instruction_definitions.json');
-import instruction_types = require('../resources/instruction_types.json');
-import field_rules = require('../resources/field_rules.json');
-=======
 import DECLARATIONS = require('../resources/instruction_definitions.json');
 import INSTRUCTION_TYPES = require('../resources/instruction_types.json');
-import FILED_RULES = require('../resources/field_declarations.json');
-<<<<<<< HEAD
-import { Instruction } from '../models/instruction';
->>>>>>> 3d38fc2 (Refactored)
-=======
+import FILED_RULES = require('../resources/field_rules.json');
 import { Instruction, FieldRule } from '../models/models';
->>>>>>> 8950f3b (Further developed building instruction)
 
 export interface IRead<T> {
   find(item: T): Promise<T[]>;
