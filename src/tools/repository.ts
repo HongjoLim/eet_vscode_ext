@@ -6,8 +6,12 @@ import field_rules = require('../resources/field_rules.json');
 import DECLARATIONS = require('../resources/instruction_definitions.json');
 import INSTRUCTION_TYPES = require('../resources/instruction_types.json');
 import FILED_RULES = require('../resources/field_declarations.json');
+<<<<<<< HEAD
 import { Instruction } from '../models/instruction';
 >>>>>>> 3d38fc2 (Refactored)
+=======
+import { Instruction, FieldRule } from '../models/models';
+>>>>>>> 8950f3b (Further developed building instruction)
 
 export interface IRead<T> {
   find(item: T): Promise<T[]>;
@@ -36,7 +40,7 @@ export class InstructionRepository extends Repository<Instruction>{
 
 }
 
-export class FieldRuleRepository extends Repository<Field>{
+export class FieldRuleRepository extends Repository<FieldRule>{
 
 }
 

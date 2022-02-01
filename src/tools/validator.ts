@@ -1,7 +1,6 @@
 import * as vscode from 'vscode';
 import * as repository from './repository';
-import * as parser from './instruction_parser';
-import { Instruction } from '../models/instruction';
+import { Parser } from './parser';
 const EET_LANGUAGE_CONFIG = require('../syntaxes/eet.tmLanguage.json').patterns[0];
 export const NUMERIC_FIELD_RULE = /^\d+$/;
 export const VERSION_NUMBER_RULE = /\d+/;
@@ -15,13 +14,8 @@ export interface IValidator<T> {
 }
 
 abstract class Validator implements IValidator<vscode.TextLine> {
-    service: InstructionValidationService;
     next: IValidator<vscode.TextLine> | undefined;
     diagnostics: vscode.Diagnostic[] = [];
-
-    constructor(service: InstructionValidationService){
-        this.service = service;
-    }
 
     setNext(validator: IValidator<vscode.TextLine>) : IValidator<vscode.TextLine>{
         this.next = validator;
@@ -29,24 +23,6 @@ abstract class Validator implements IValidator<vscode.TextLine> {
     }
 
     validate(data: vscode.TextLine): IValidator<vscode.TextLine> | undefined {
-        return this.next;
-    }
-}
-
-class MessageFormatValidator extends Validator {
-
-    INCORRECT_FORMAT_ERROR : string = 'Message not in correct format';
-
-    validate(data: vscode.TextLine): IValidator<vscode.TextLine> | undefined {
-        const text = data.text;
-        const parsed = text.match(EET_LANGUAGE_CONFIG.match);
-
-        if (parsed === undefined) {
-            
-            this.service.createDiagnostic(this.INCORRECT_FORMAT_ERROR, data.lineNumber, 0, data.lineNumber, text.length - 1, vscode.DiagnosticSeverity.Error);
-            return undefined;
-        }
-
         return this.next;
     }
 }
@@ -93,22 +69,29 @@ export interface IService <T, U> {
 export class InstructionValidationService implements IService <vscode.TextLine, vscode.Diagnostic[]> {
 
     validator : IValidator<vscode.TextLine>;
-    diagnostics: vscode.Diagnostic[] = [];
-    
-    constructor(){
-        this.validator = new StreamTimeValidator(this)
-        .setNext(new UmiValidator(this))
-        .setNext(new InstructionIdValidator(this))
-        .setNext(new VersionTagValidator(this));
+    INCORRECT_FORMAT_ERROR : string = 'Message not in correct format';
+    parser: Parser;
+
+    constructor(parser: Parser){
+        this.parser = parser;
+        this.validator = new StreamTimeValidator()
+        .setNext(new UmiValidator())
+        .setNext(new InstructionIdValidator())
+        .setNext(new VersionTagValidator());
     }
 
     run(data: vscode.TextLine): vscode.Diagnostic[] {
         const diagnostics: vscode.Diagnostic[] = [];
 
-        this.validator.validate(data);
         const text = data.text;
+        const parsed = text.match(EET_LANGUAGE_CONFIG.match);
 
-        let [dataInCsv, description] = parser.splitDataDescription(text);
+        if (parsed === undefined) {
+            diagnostics.push(this.createDiagnostic(this.INCORRECT_FORMAT_ERROR, data.lineNumber, 0, data.lineNumber, text.length - 1, vscode.DiagnosticSeverity.Error));
+            return diagnostics;
+        }
+
+        let [dataInCsv, description] = this.parser.splitDataDescription(text);
 
         if (dataInCsv.trim() == '') {
             return diagnostics;
@@ -146,7 +129,7 @@ export class InstructionValidationService implements IService <vscode.TextLine, 
     }
 
     validateData(dataInCsv: string): { message: string, startChar: number, endChar: number }[] {
-        let items = parser.SplitIntoItems(dataInCsv);
+        let items = this.parser.splitIntoItems(dataInCsv);
         let errors = [];
         let runningCharCount = 0;
 
@@ -174,13 +157,13 @@ export class InstructionValidationService implements IService <vscode.TextLine, 
         let version_number = 0;
         let fVersionTagPresent = false;
         if (items.length >= 4) {
-            fVersionTagPresent = parser.versionTagExists(items[3]);
+            fVersionTagPresent = this.parser.versionTagExists(items[3]);
             if (fVersionTagPresent) {
 
                 if (!this.validateRule(items[3], VERSION_TAG_RULE)) {
                     errors.push({ message: 'Version tag: Invalid format', startChar: runningCharCount, endChar: runningCharCount + items[3].length });
                 } else {
-                    version_number = parser.getVersionNumber(items[3]);
+                    version_number = this.parser.getVersionNumber(items[3]);
                 }
             }
         }

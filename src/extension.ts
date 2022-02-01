@@ -2,9 +2,9 @@ import * as vscode from 'vscode';
 import { subscribeToDocumentChanges } from './diagnostics';
 import * as utils from './tools/utils';
 import * as repository from './tools/repository';
-import getToolTip from './tools/instruction_parser';
 import { InstructionTreeProvider } from './providers/tree_view_components/instruction_tree_provider';
 import { InstructionValidationService } from './tools/validator';
+import { Parser } from './tools/parser';
 
 const DOCUMENT_SELECTOR = 'eet';
 
@@ -14,13 +14,14 @@ export function activate(context: vscode.ExtensionContext) {
 
 	const messageDiagnostics = vscode.languages.createDiagnosticCollection("emoji");
 	context.subscriptions.push(messageDiagnostics);
-	subscribeToDocumentChanges(new InstructionValidationService(), context, messageDiagnostics);
+	const parser = new Parser();
+	subscribeToDocumentChanges(new InstructionValidationService(parser), context, messageDiagnostics);
 
 	vscode.languages.registerHoverProvider(DOCUMENT_SELECTOR, {
 		provideHover(document, position, token) {
 
 			let line = document.lineAt(position.line);
-			let output = getToolTip(line.text, position.character);
+			let output = parser.getToolTip(line.text, position.character);
 			return { contents: [output] };
 		}
 	});

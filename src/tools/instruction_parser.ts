@@ -1,4 +1,4 @@
-import { InstructionBuilder } from '../models/instruction';
+import { InstructionBuilder } from '../models/models';
 import * as utils from './utils';
 
 const EET_LANGUAGE_CONFIG = require('../../syntaxes/eet.tmLanguage.json').patterns[0];

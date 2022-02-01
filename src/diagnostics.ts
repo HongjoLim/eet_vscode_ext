@@ -1,7 +1,5 @@
 import * as vscode from 'vscode';
-import { Instruction } from './models/instruction';
-import * as parser from './tools/instruction_parser';
-import { InstructionValidationService, IService} from './tools/validator';
+import { IService } from './tools/validator';
 
 /** Code that is used to associate diagnostic entries with code actions. */
 export const INCORRECT_FORMAT_ERROR = 'incorrect message format';

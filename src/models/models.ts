@@ -2,7 +2,7 @@ export class Instruction {
     instruction_id: number;
     name: string | undefined;
     version: number;
-    fields: { name: string; default: string }[];
+    fields: Field[];
 
     constructor(builder: InstructionBuilder) {
         this.instruction_id = builder.instruction_id;
@@ -10,11 +10,15 @@ export class Instruction {
         this.version = builder.version;
         this.fields = builder.fields;
     }
+}
 
-    getFieldDisplayNameByIndex(field_index: number): string {
-        const fieldName = this.fields[field_index].name;
-        const capitalized = fieldName.split('_').map(x => { return x.charAt(0).toUpperCase() + x.slice(1); });
-        return capitalized.join(' ');
+export class Field {
+    name: string;
+    value: string;
+
+    constructor(name: string, value: string) {
+        this.name = name;
+        this.value = value;
     }
 }
 
@@ -38,21 +42,21 @@ export class InstructionBuilder implements Builder<Instruction>{
     instruction_id: number = 0;
     name: string | undefined;
     version: number = 0;
-    fields: { name: string; default: string }[] = [];
+    fields: Field[] = [];
 
     constructor(items: string[]) {
         const instruction_id = parseInt(items[0]);
+        this.instruction_id = instruction_id;
         let version = 0;
         let fVersionTagPresent = false;
 
         if (items.length >= 2) {
-
-            fVersionTagPresent = this.versionTagExists(items[1]);
-
             if (fVersionTagPresent) {
                 version = this.getVersionNumber(items[1]);
             }
         }
+
+        // To do: assign fields
     }
 
     build(): Instruction {
@@ -62,23 +66,6 @@ export class InstructionBuilder implements Builder<Instruction>{
         instruction.version = this.version;
         instruction.fields = this.fields;
         return instruction;
-    }
-
-    splitIntoItems(dataInCsv: string): string[] {
-        return dataInCsv.split(COMMA_DELIMITER_RULE) || [];
-    }
-
-    splitDataDescription(line: string): string[] {
-        return line.split(DESCRIPTION_DELIMITER_RULE);
-    }
-
-    getVersionNumber(version_tag: string) {
-        let version_number = version_tag.match(validator.VERSION_NUMBER_RULE)?.shift() || '0';
-        return parseInt(version_number);
-    }
-
-    versionTagExists(item: string) {
-        return item.match(validator.VERSION_TAG_RULE) != undefined;
     }
 }
 
