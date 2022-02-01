@@ -2,7 +2,7 @@ import * as repository from './repository';
 import { Instruction } from '../models/instruction';
 import * as validator from './instruction_validator';
 
-const EET_LANGUAGE_CONFIG = require("../syntaxes/eet.tmLanguage.json").patterns[0];
+const EET_LANGUAGE_CONFIG = require('../../syntaxes/eet.tmLanguage.json').patterns[0];
 const COMMA_DELIMITER_RULE = /,(?=(?:[^"]*"[^"]*")*[^"]*$)/;
 const DESCRIPTION_DELIMITER_RULE = /\/\/(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/;
 
@@ -24,7 +24,7 @@ export default function getToolTip(text: string, positionIndex: number) : string
         switch (index) {
             case 0:
             case 1:
-                output = EET_LANGUAGE_CONFIG.captures[index].tooltip_name;
+                output = EET_LANGUAGE_CONFIG.captures[index + 2].tooltip_name;
                 break;
             case 2:
                 output = `Msg ID: ${instruction?.instruction.instruction_id || ``} - ${instruction?.instruction.name}`;
