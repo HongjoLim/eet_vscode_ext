@@ -1,5 +1,6 @@
 import * as repository from './repository';
 import * as parser from './instruction_parser';
+import * as utils from './utils';
 export const NUMERIC_FIELD_RULE = /\d+/;
 export const VERSION_TAG_RULE = /<ver[ ]?:[ ]?\d+>/i;
 
@@ -93,7 +94,8 @@ export function validateData(dataInCsv: string): {message: string, startChar: nu
 
             if(!field_valid){
                 const error_message = repository.get_erorr_message_by_field_name(instruction.fields[fieldIndex].name);
-                errors.push({message: `Invalid input for ${instruction.fields[fieldIndex].name}. ${instruction.fields[fieldIndex].name} must be ${error_message}.`, startChar: runningWordCount, endChar: runningWordCount + items[index].length});
+                const capitalizedFieldName = utils.capitalize(instruction.fields[fieldIndex].name);
+                errors.push({message: `Invalid input for ${capitalizedFieldName}. ${capitalizedFieldName} must be ${error_message}.`, startChar: runningWordCount, endChar: runningWordCount + items[index].length});
             }
 
             runningWordCount += items[index].length + 1;

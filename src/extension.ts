@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { subscribeToDocumentChanges } from './diagnostics';
-import create_instruction_with_default_values from './tools/utils';
+import * as utils from './tools/utils';
 import * as repository from './tools/repository';
 import getToolTip from './tools/instruction_parser';
 import { InstructionTreeProvider } from './providers/tree_view_components/instruction_tree_provider';
@@ -40,7 +40,7 @@ export function activate(context: vscode.ExtensionContext) {
 		const providers = [];
 		for (let ins of repository.DECLARATIONS) {
 			const item = new vscode.CompletionItem(`new ${ins.id}: ${ins.name}`);
-			let default_values = create_instruction_with_default_values(ins.fields);
+			let default_values = utils.create_instruction_with_default_values(ins.fields);
 			item.insertText = new vscode.SnippetString(`0, 0, ${ins.id}, <Ver: ${ins.version}>, ${default_values}`);
 			item.documentation = new vscode.MarkdownString(`Inserts ${ins.id} instruction with default values.`);
 
