@@ -3,13 +3,14 @@
 	"scopeName": "source.eet",
 	"name": "EET",
 	"patterns": [
-        { "match": "^([0-9]+,)([ ]?[0-9]+,)([ ]?[0-9]+,?)(([^/][^/]*))?",
+        { "match": "(?<=.*?)(\/\/.*)|^([0-9]+,)([ ]?[0-9]+,)([ ]?[0-9]+,)([ ]?<ver:[ ]?[0-9]+>,)?([ ]?[0-9]+,?[^/][^/]*)?",
           "name": "eetgroup",
           "captures": {
-              "1": {"name": "entity.name.type.timestamp.eet", "tooltip_name": "Stream Time"},
-              "2": {"name": "constant.numeric.uat_index", "tooltip_name": "Unique Message Index"},
-              "3": {"name": "keyword.instruction_id.eet", "tooltip_name": "Instruction ID"},
-              "4": {"name": "variable.instruction.eet", "tooltip_name": "Data"}
+              "1": {"name": "comment.line.double-slash.eet", "tooltip_name": ""},
+              "2": {"name": "entity.name.type.timestamp.eet", "tooltip_name": "Timestamp"},
+              "3": {"name": "constant.numeric.uat_index", "tooltip_name": "UAT Index"},
+              "4": {"name": "keyword.instruction_id.eet", "tooltip_name": "Instruction ID"},
+			  "5": {"name": "keyword.version_number.eet", "tooltip_name": "Version Number"}
           }
         }
     ],

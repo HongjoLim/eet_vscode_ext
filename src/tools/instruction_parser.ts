@@ -7,7 +7,7 @@ const COMMA_DELIMITER_RULE = /,(?=(?:[^"]*"[^"]*")*[^"]*$)/;
 const DESCRIPTION_DELIMITER_RULE = /\/\/(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/;
 
 export default function getToolTip(text: string, positionIndex: number) : string {
-    const parsed = text.match(EET_LANGUAGE_CONFIG.match);
+    const parsed = text.toLowerCase().match(EET_LANGUAGE_CONFIG.match);
     let output = '';
 
     if (parsed == undefined) {
@@ -17,25 +17,24 @@ export default function getToolTip(text: string, positionIndex: number) : string
     let [dataInCsv, description] = splitDataDescription(text);
 
     if (dataInCsv != '') {
+        const fVersionTagPresent = parsed[5] != undefined;
         const instruction = parseToInstruction(dataInCsv);
         const index = text.substring(0, positionIndex + 1).split(COMMA_DELIMITER_RULE).length - 1;
 
         switch (index) {
             case 0:
-                output = `stream time`;
-                break;
             case 1:
-                output = `Unique Message Index`;
+                output = EET_LANGUAGE_CONFIG.captures[index].tooltip_name;
                 break;
             case 2:
                 output = `Msg ID: ${instruction?.instruction.instruction_id || ``} - ${instruction?.instruction.name}`;
                 break;
             default:
-                if(instruction?.version_tag_present && index == 3){
+                if(fVersionTagPresent && index == 3){
                     output = `Version Number`;
                 }
                 else{
-                    output = `${instruction?.instruction.getFieldDisplayNameByIndex(index - (instruction.version_tag_present ? 4 : 3)) || ``}`;
+                    output = `${instruction?.instruction.getFieldDisplayNameByIndex(index - (fVersionTagPresent ? 4 : 3)) || ``}`;
                 }
                 break;
         }
